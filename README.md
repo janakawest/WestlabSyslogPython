@@ -6,9 +6,9 @@ This has been implemented based on following resources
 RFC5424         : https://tools.ietf.org/html/rfc5424
 syslog man page : https://linux.die.net/man[C/3/openlog
 
-##NOTE: Note: you have to copy "westSysLog.py" into /usr/lib64/<python version>/site-packages/ directory
+### NOTE: Note: you have to copy "westSysLog.py" into /usr/lib64/<python version>/site-packages/ directory
 
-##Usage
+## Usage
 ```python
 Following is a test class case implemented to test the WestlabSyslogStream class
 Note: you have to copy "westSysLog.py" into /usr/lib64/<python version>/site-packages/ directory
