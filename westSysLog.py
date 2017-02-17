@@ -224,9 +224,9 @@ if __name__ == '__main__':
   westSysLog.WestlabSyslogStream ('user', 'debug', __file__)
 
   # Write to the syslog
-  logging.debug ('debug message')
-  logging.info('info')
-  logging.warning('warning')
-  logging.error('error')
-  logging.critical('critical')
+  logging.debug ('Debug')
+  logging.info('Info')
+  logging.warning('A Warning')
+  logging.error('An error')
+  logging.critical('A Critical Message')
 '''
