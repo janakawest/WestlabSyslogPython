@@ -11,97 +11,22 @@ import logging
 import syslog
 
 class WestlabSyslogStream (logging.Handler):
-	"---------------------------------------------------------"
-	" This class is implemented to write a message to syslog	"
-	" This is according to RFC5424. 													"
-	"	 Numerical         Severity															"
-	"		 Code																									"
-	"																													"
-	"			0 Emergency: system is unusable 										"
-	"			1 Alert: action must be taken immediately 					"
-	"			2 Critical: critical conditions 										"
-	"			3 Error: error conditions 													"
-	"			4 Warning: warning conditions 											"
-	"			5 Notice: normal but significant condition 					"
-	"			6 Informational: informational messages 						"
-	"			7 Debug: debug-level messages 											"
-	"																													"
-	"			Table 2. Syslog Message Severities 									"
-	"---------------------------------------------------------"
-	logPriorities = {'emergency':'syslog.LOG_EMERG',
-										'alert':'syslog.LOG_ALERT',
-										'critical':'syslog.LOG_CRIT',
-										'error':'syslog.LOG_ERR',
-										'warning':'syslog.LOG_WARNING',
-										'notice':'syslog.LOG_NOTICE',
-										'info':'syslog.LOG_INFO',
-										'debug':'syslog.LOG_DEBUG'}
+	logPriorities = {'emergency':'syslog.LOG_EMERG', 'alert':'syslog.LOG_ALERT', 'critical':'syslog.LOG_CRIT', 'error':'syslog.LOG_ERR', 'warning':'syslog.LOG_WARNING', 'notice':'syslog.LOG_NOTICE', 'info':'syslog.LOG_INFO', 'debug':'syslog.LOG_DEBUG'}
 
-	"-------------------------------------------------------"
-	"This is according to RFC5424														"
-	"	Numerical			Facility																"
-	"		Code																								"
-	"																												"
-	"			0					kernel messages													"
-	"			1					user-level messages											"
-	"			2					mail system															"
-	"			3					system daemons													"
-	"			4					security/authorization messages					"
-	"			5					messages generated internally by syslogd"
- 	"			6					line printer subsystem									"
- 	"			7					network news subsystem									"
- 	"			8					UUCP subsystem													"
- 	"			9					clock daemon														"
- 	"			10				security/authorization messages					"
- 	"			11				FTP daemon															"
- 	"			12				NTP subsystem														"
- 	"			13				log audit																"
- 	"			14				log alert																"
- 	"			15				clock daemon (note 2)										"
- 	"			16				local use 0  (local0)										"
- 	"			17				local use 1  (local1)										"
- 	"			18				local use 2  (local2)										"
- 	"			19				local use 3  (local3)										"
- 	"			20				local use 4  (local4)										"
- 	"			21				local use 5  (local5)										"
- 	"			22				local use 6  (local6)										"
- 	"			23				local use 7  (local7)										"
-	"																												"
- 	"				Table 1.  Syslog Message Facilities							"
- 	"	However, according to the openlog(3) - Linux man page,"
-	" it supports only following types											"
-	"-------------------------------------------------------"
-	logFacilities = {'auth':syslog.LOG_AUTH,
-										'cron':syslog.LOG_CRON,
-										'log_daemon':syslog.LOG_DAEMON,
-										'ftp':syslog.LOG_KERN,
-										'local0':syslog.LOG_LOCAL0,
-										'local1':syslog.LOG_LOCAL1,
-										'local2':syslog.LOG_LOCAL2,
-										'local3':syslog.LOG_LOCAL3,
-										'local4':syslog.LOG_LOCAL4,
-										'local5':syslog.LOG_LOCAL5,
-										'local6':syslog.LOG_LOCAL6,
-										'local7':syslog.LOG_LOCAL7,
-										'lpr':syslog.LOG_LPR,
-										'mail':syslog.LOG_MAIL,
-										'news':syslog.LOG_NEWS,
-										'wsyslog':syslog.LOG_SYSLOG,
-										'user':syslog.LOG_USER,
-										'uucp':syslog.LOG_UUCP}
+	logFacilities = {'auth':syslog.LOG_AUTH, 'cron':syslog.LOG_CRON, 'log_daemon':syslog.LOG_DAEMON, 'ftp':syslog.LOG_KERN,	'local0':syslog.LOG_LOCAL0, 'local1':syslog.LOG_LOCAL1,	'local2':syslog.LOG_LOCAL2, 'local3':syslog.LOG_LOCAL3,	'local4':syslog.LOG_LOCAL4,'local5':syslog.LOG_LOCAL5,'local6':syslog.LOG_LOCAL6,'local7':syslog.LOG_LOCAL7,'lpr':syslog.LOG_LPR,'mail':syslog.LOG_MAIL,'news':syslog.LOG_NEWS,'wsyslog':syslog.LOG_SYSLOG,'user':syslog.LOG_USER,'uucp':syslog.LOG_UUCP}
 
 	# This region is for define variables
 	n_logFacility = 'user' # default is set as LOG_USER
-	n_logProperty = 'debug' # Default is set as LOG_DEBUG
+	n_logProperty = 'info' # Default is set as LOG_DEBUG
 
 	def __init__ (self, lFacility, lPriority, programId):
 		''' Constructor '''
 		# Check for the parameters are correct
 		if not lFacility in self.logFacilities:
-			print 'Error! Check the ' + type(self).__name__ + ' Class for the supporting Syslog Facilities'
+			print ('Error! Check the ' + type(self).__name__ + ' Class for the supporting Syslog Facilities')
 			exit ()
 		if not lPriority in self.logPriorities:
-			print 'Error! Check the ' + type(self).__name__ + ' Class for the supporting Syslog Priorities'
+			#print (Error! Check the ' + type(self).__name__ + ' Class for the supporting Syslog Priorities')
 			exit ()
 		self.n_logPriority = self.logPriorities[lPriority]
 		self.n_logFacility = self.logFacilities[lFacility]
@@ -109,10 +34,10 @@ class WestlabSyslogStream (logging.Handler):
 		# Now Try to open the Syslog
 		try:
 			syslog.openlog(logoption=syslog.LOG_PID, lgFac=self.logFacilities[lFacility])
-		except Exception, err:
+		except Exception as err:
 			try:
 				syslog.openlog(syslog.LOG_PID, self.logFacilities[lFacility])
-			except Exception, err:
+			except Exception as err:
 				try:
 					syslog.openlog('Westlab_Syslogger', syslog.LOG_PID, self.logFacilities[lFacility])
 				except:
@@ -123,8 +48,8 @@ class WestlabSyslogStream (logging.Handler):
 			n_logLevel = ''
 			n_logFormat = ''
 			self.n_logLevel, self.n_logFormat = self.SetLogProperty (programId, self.GetLogPriority ())
-		except Exception, err:
-			print err
+		except Exception as err:
+			print (err)
 			raise
 
 		# Initialize the Logging Handler
@@ -192,8 +117,7 @@ class WestlabSyslogStream (logging.Handler):
 												id + ' %(levelname)-9s %(message)s'))
 			return LOG_ATTRIBUTE
 		else:
-			print 'The Log Priority:'+str(priority)+ \
-						'is incorrect. Check the ' + type(self).__name__ + ' Class for the supporting Syslog Priorities'
+			print ('The Log Priority:'+str(priority)+'is incorrect. Check the ' + type(self).__name__ + ' Class for the supporting Syslog Priorities')
 			exit ()
 
 	# Output the given message to SYSLOG.
@@ -204,6 +128,8 @@ class WestlabSyslogStream (logging.Handler):
 
 	def close (self):
 		syslog.closelog ()
+	def WriteToLog (self, message):
+		syslog.syslog (message)
 
 
 '''
@@ -224,9 +150,9 @@ if __name__ == '__main__':
   westSysLog.WestlabSyslogStream ('user', 'debug', __file__)
 
   # Write to the syslog
-  logging.debug ('Debug')
-  logging.info('Info')
-  logging.warning('A Warning')
-  logging.error('An error')
-  logging.critical('A Critical Message')
+  logging.debug ('debug message')
+  logging.info('info')
+  logging.warning('warning')
+  logging.error('error')
+  logging.critical('critical')
 '''
